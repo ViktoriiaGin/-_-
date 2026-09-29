@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Виктория — обо мне</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f5e6d3;
+      --card: #7c3f2b;
+      --card-inner: #954f34;
+      --card-hover: #a85f3d;
+      --text: #fdf3e7;
+      --text-muted: rgba(253, 243, 231, 0.75);
+      --border: rgba(253, 243, 231, 0.18);
+      --accent: #e8a33d;
+      --accent-soft: rgba(232, 163, 61, 0.2);
+    }
+
+    html.dark-theme {
+      --bg: #241811;
+      --card: #33211a;
+      --card-inner: #3e291f;
+      --card-hover: #4a3324;
+      --text: #f5e6d3;
+      --text-muted: rgba(245, 230, 211, 0.7);
+      --border: rgba(245, 230, 211, 0.14);
+      --accent: #e8a33d;
+      --accent-soft: rgba(232, 163, 61, 0.22);
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Manrope", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem 1.25rem;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .card {
+      position: relative;
+      max-width: 480px;
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 2.5rem 2rem 2rem;
+      box-shadow: 0 16px 48px rgba(90, 45, 20, 0.3);
+      animation: fadeUp 0.7s ease both;
+      transition: background 0.3s ease;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 1.1rem;
+      right: 1.1rem;
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card-inner);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent);
+      transform: rotate(15deg);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes gradientSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .photo-wrap {
+      position: relative;
+      width: 148px;
+      height: 148px;
+      margin: 0 auto 1.25rem;
+    }
+
+    .photo-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        #e8a33d,
+        #7c3f2b,
+        #c1521f,
+        #f4d35e,
+        #8a3b1f,
+        #e8a33d
+      );
+      animation: gradientSpin 5s linear infinite;
+    }
+
+    .photo {
+      position: relative;
+      z-index: 1;
+      width: calc(100% - 6px);
+      height: calc(100% - 6px);
+      margin: 3px;
+      border-radius: 50%;
+      background: var(--card-inner);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .photo-icon {
+      font-size: 4rem;
+      line-height: 1;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+    }
+
+    .badge {
+      display: inline-block;
+      margin-bottom: 0.75rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(2.4rem, 6vw, 3rem);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      margin-top: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .facts {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .facts li {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1rem 1.1rem;
+      border-radius: 16px;
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      transition: transform 0.2s ease, background 0.2s ease;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .facts li:nth-child(1) { animation-delay: 0.1s; }
+    .facts li:nth-child(2) { animation-delay: 0.2s; }
+    .facts li:nth-child(3) { animation-delay: 0.3s; }
+
+    .facts li:hover {
+      transform: translateY(-2px);
+      background: var(--card-hover);
+    }
+
+    .fact-num {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .fact-text {
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: var(--text);
+      padding-top: 0.15rem;
+    }
+
+    .contacts {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .contacts-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .contact-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .contact-list a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      color: var(--text);
+      text-decoration: none;
+      background: var(--card-inner);
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .contact-list a:hover {
+      background: var(--accent);
+      color: #4a2414;
+      transform: translateY(-1px);
+    }
+
+    .contact-label {
+      font-size: 0.8rem;
+      opacity: 0.75;
+      min-width: 4.5rem;
+    }
+
+    .contact-list a:hover .contact-label {
+      opacity: 1;
+    }
+
+    .counter {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .counter-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      margin-top: 0.75rem;
+    }
+
+    .counter-btn {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card-inner);
+      color: var(--text);
+      font-size: 1.4rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .counter-btn:hover {
+      background: var(--accent);
+      color: #4a2414;
+      transform: translateY(-1px);
+    }
+
+    .counter-btn:active {
+      transform: translateY(0) scale(0.95);
+    }
+
+    .counter-value {
+      min-width: 2.5rem;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">🌙</button>
+    <header class="header">
+      <div class="photo-wrap">
+        <div class="photo-ring" aria-hidden="true"></div>
+        <div class="photo" aria-label="Фото">
+          <span class="photo-icon" aria-hidden="true">🐼</span>
+        </div>
+      </div>
+
+      <span class="badge">Обо мне</span>
+      <h1>Виктория</h1>
+      <p class="subtitle">Три факта, которые меня описывают</p>
+    </header>
+
+    <ol class="facts">
+      <li>
+        <span class="fact-num">1</span>
+        <span class="fact-text">Я очень въедливая и дотошная, как любая дева люблю все контролировать.</span>
+      </li>
+      <li>
+        <span class="fact-num">2</span>
+        <span class="fact-text">Мне важно, чтобы было всё чётко разложено.</span>
+      </li>
+      <li>
+        <span class="fact-num">3</span>
+        <span class="fact-text">Я люблю кушать и готовить, и именно поэтому дисциплинирую себя и занимаюсь спортом.</span>
+      </li>
+    </ol>
+
+    <section class="contacts" aria-label="Контакты">
+      <h2 class="contacts-title">Контакты</h2>
+      <ul class="contact-list">
+        <li>
+          <a href="mailto:victoria@example.com">
+            <span class="contact-label">Почта</span>
+            <span>victoria@example.com</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://t.me/viktoriyaginina" target="_blank" rel="noopener noreferrer">
+            <span class="contact-label">Telegram</span>
+            <span>@viktoriyaginina</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="counter" aria-label="Счётчик">
+      <h2 class="contacts-title">Счётчик</h2>
+      <div class="counter-box">
+        <button class="counter-btn" id="decrementBtn" aria-label="Уменьшить">−</button>
+        <span class="counter-value" id="counterValue">0</span>
+        <button class="counter-btn" id="incrementBtn" aria-label="Увеличить">+</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark-theme');
+      const isDark = document.documentElement.classList.contains('dark-theme');
+      themeToggle.textContent = isDark ? '☀️' : '🌙';
+    });
+
+    let count = 0;
+    const counterValue = document.getElementById('counterValue');
+
+    document.getElementById('incrementBtn').addEventListener('click', () => {
+      count++;
+      counterValue.textContent = count;
+    });
+
+    document.getElementById('decrementBtn').addEventListener('click', () => {
+      count--;
+      counterValue.textContent = count;
+    });
+  </script>
+</body>
+</html>

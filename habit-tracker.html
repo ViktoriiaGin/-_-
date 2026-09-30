@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Трекер привычек</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #f5e6d3;
+      --card: #7c3f2b;
+      --card-inner: #954f34;
+      --card-hover: #a85f3d;
+      --text: #fdf3e7;
+      --text-muted: rgba(253, 243, 231, 0.75);
+      --border: rgba(253, 243, 231, 0.18);
+      --accent: #e8a33d;
+      --danger: #d1603d;
+      --day-off: rgba(253, 243, 231, 0.12);
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Manrope", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem 1.25rem;
+    }
+
+    .card {
+      max-width: 480px;
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 2.5rem 2rem 2rem;
+      box-shadow: 0 16px 48px rgba(90, 45, 20, 0.3);
+    }
+
+    h1 {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(2rem, 5vw, 2.4rem);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .add-row {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .add-row input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card-inner);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+
+    .add-row input::placeholder { color: var(--text-muted); }
+
+    .add-row button {
+      padding: 0 1.25rem;
+      border-radius: 12px;
+      border: none;
+      background: var(--accent);
+      color: #4a2414;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .habit-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .habit-item {
+      padding: 1rem 1.1rem;
+      border-radius: 16px;
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+    }
+
+    .habit-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .habit-name {
+      font-weight: 600;
+      font-size: 1rem;
+      word-break: break-word;
+    }
+
+    .habit-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .today-btn {
+      padding: 0.4rem 0.85rem;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #4a2414;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .today-btn.done {
+      background: var(--card-hover);
+      color: var(--text);
+    }
+
+    .delete-btn {
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 1rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .delete-btn:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .week-grid {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .day-cell {
+      flex: 1;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      background: var(--day-off);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .day-cell.done {
+      background: var(--accent);
+      color: #4a2414;
+    }
+
+    .habit-stats {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      padding: 1.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Трекер привычек</h1>
+    <p class="subtitle">Отмечай дни, когда получилось — прогресс сохраняется</p>
+
+    <div class="add-row">
+      <input type="text" id="habitInput" placeholder="Новая привычка..." autocomplete="off">
+      <button id="addBtn">Добавить</button>
+    </div>
+
+    <ul class="habit-list" id="habitList"></ul>
+    <p class="empty-state" id="emptyState">Пока нет ни одной привычки — добавь первую</p>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'habit-tracker-data';
+    const DAY_LABELS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+    function todayStr(offset = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() - offset);
+      return d.toISOString().split('T')[0];
+    }
+
+    function loadHabits() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveHabits() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(habits));
+      } catch (e) {}
+    }
+
+    let habits = loadHabits();
+
+    const habitInput = document.getElementById('habitInput');
+    const addBtn = document.getElementById('addBtn');
+    const habitList = document.getElementById('habitList');
+    const emptyState = document.getElementById('emptyState');
+
+    function render() {
+      habitList.innerHTML = '';
+      emptyState.style.display = habits.length === 0 ? 'block' : 'none';
+
+      habits.forEach((habit, index) => {
+        const li = document.createElement('li');
+        li.className = 'habit-item';
+
+        const top = document.createElement('div');
+        top.className = 'habit-top';
+
+        const name = document.createElement('span');
+        name.className = 'habit-name';
+        name.textContent = habit.name;
+
+        const actions = document.createElement('div');
+        actions.className = 'habit-actions';
+
+        const isDoneToday = habit.doneDates.includes(todayStr());
+        const todayBtn = document.createElement('button');
+        todayBtn.className = 'today-btn' + (isDoneToday ? ' done' : '');
+        todayBtn.textContent = isDoneToday ? 'Готово сегодня ✓' : 'Отметить сегодня';
+        todayBtn.addEventListener('click', () => {
+          const t = todayStr();
+          const i = habit.doneDates.indexOf(t);
+          if (i === -1) {
+            habit.doneDates.push(t);
+          } else {
+            habit.doneDates.splice(i, 1);
+          }
+          saveHabits();
+          render();
+        });
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = '✕';
+        deleteBtn.setAttribute('aria-label', 'Удалить привычку');
+        deleteBtn.addEventListener('click', () => {
+          habits.splice(index, 1);
+          saveHabits();
+          render();
+        });
+
+        actions.appendChild(todayBtn);
+        actions.appendChild(deleteBtn);
+        top.appendChild(name);
+        top.appendChild(actions);
+
+        const grid = document.createElement('div');
+        grid.className = 'week-grid';
+        for (let i = 6; i >= 0; i--) {
+          const dateStr = todayStr(i);
+          const cell = document.createElement('div');
+          cell.className = 'day-cell' + (habit.doneDates.includes(dateStr) ? ' done' : '');
+          const dayOfWeek = new Date(dateStr).getDay();
+          cell.textContent = DAY_LABELS[dayOfWeek === 0 ? 6 : dayOfWeek - 1];
+          grid.appendChild(cell);
+        }
+
+        const stats = document.createElement('div');
+        stats.className = 'habit-stats';
+        stats.textContent = `Всего дней: ${habit.doneDates.length}`;
+
+        li.appendChild(top);
+        li.appendChild(grid);
+        li.appendChild(stats);
+        habitList.appendChild(li);
+      });
+    }
+
+    function addHabit() {
+      const value = habitInput.value.trim();
+      if (value === '') return;
+      habits.push({ name: value, doneDates: [] });
+      saveHabits();
+      habitInput.value = '';
+      render();
+      habitInput.focus();
+    }
+
+    addBtn.addEventListener('click', addHabit);
+    habitInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addHabit();
+    });
+
+    render();
+  </script>
+</body>
+</html>
